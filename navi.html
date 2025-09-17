@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>献立アシスタント</h2>
+  <textarea id="input" placeholder="例: 疲労回復に良い料理、材料: 鶏むね肉と玉ねぎ"></textarea>
+  <button onclick="send()">送信</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function send(){
+      const text = document.getElementById("input").value;
+      const res = await fetch("https://あなたのサーバー/api/recipe", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      document.getElementById("result").textContent = data.recipe;
+    }
+  </script>
+</body>
+</html>
