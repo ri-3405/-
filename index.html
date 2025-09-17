@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>献立アシスタント</title>
+</head>
+<body>
+  <h2>献立アシスタント</h2>
+  <textarea id="input" placeholder="材料を入力"></textarea>
+  <button onclick="send()">送信</button>
+  <pre id="result"></pre>
+
+  <script>
+    function send(){
+      const text = document.getElementById("input").value;
+      document.getElementById("result").textContent = "あなたが入力したのは: " + text;
+    }
+  </script>
+</body>
+</html>
+
