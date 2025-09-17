@@ -6,16 +6,36 @@
 </head>
 <body>
   <h2>献立アシスタント</h2>
-  <textarea id="input" placeholder="材料を入力"></textarea>
-  <button onclick="send()">送信</button>
+  <p>材料を選んでください:</p>
+
+  <!-- 材料ボタン -->
+  <button onclick="showRecipe('鶏むね肉')">鶏むね肉</button>
+  <button onclick="showRecipe('玉ねぎ')">玉ねぎ</button>
+  <button onclick="showRecipe('じゃがいも')">じゃがいも</button>
+  <button onclick="showRecipe('ほうれん草')">ほうれん草</button>
+
+  <h3>おすすめ料理</h3>
   <pre id="result"></pre>
 
   <script>
-    function send(){
-      const text = document.getElementById("input").value;
-      document.getElementById("result").textContent = "あなたが入力したのは: " + text;
+    function showRecipe(ingredient) {
+      let recipe = "";
+
+      // 材料ごとの料理を決め打ち
+      if (ingredient === "鶏むね肉") {
+        recipe = "鶏むね肉の照り焼き";
+      } else if (ingredient === "玉ねぎ") {
+        recipe = "オニオンスープ";
+      } else if (ingredient === "じゃがいも") {
+        recipe = "肉じゃが";
+      } else if (ingredient === "ほうれん草") {
+        recipe = "ほうれん草の胡麻和え";
+      } else {
+        recipe = "レシピが見つかりません";
+      }
+
+      document.getElementById("result").textContent = ingredient + " におすすめの料理は: " + recipe;
     }
   </script>
 </body>
 </html>
-
