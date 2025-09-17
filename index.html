@@ -3,39 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <title>献立アシスタント</title>
+  <style>
+    button {
+      margin: 5px;
+      padding: 10px;
+    }
+    .selected {
+      background-color: lightgreen;
+    }
+  </style>
 </head>
 <body>
   <h2>献立アシスタント</h2>
-  <p>材料を選んでください:</p>
+  <p>材料を選んでください（複数可）:</p>
 
   <!-- 材料ボタン -->
-  <button onclick="showRecipe('鶏むね肉')">鶏むね肉</button>
-  <button onclick="showRecipe('玉ねぎ')">玉ねぎ</button>
-  <button onclick="showRecipe('じゃがいも')">じゃがいも</button>
-  <button onclick="showRecipe('ほうれん草')">ほうれん草</button>
+  <button onclick="toggleIngredient('鶏むね肉', this)">鶏むね肉</button>
+  <button onclick="toggleIngredient('玉ねぎ', this)">玉ねぎ</button>
+  <button onclick="toggleIngredient('じゃがいも', this)">じゃがいも</button>
+  <button onclick="toggleIngredient('ほうれん草', this)">ほうれん草</button>
+
+  <br><br>
+  <button onclick="showRecipe()">おすすめ料理を表示</button>
 
   <h3>おすすめ料理</h3>
   <pre id="result"></pre>
 
   <script>
-    function showRecipe(ingredient) {
-      let recipe = "";
+    // 選択された材料を保存する配列
+    let selectedIngredients = [];
 
-      // 材料ごとの料理を決め打ち
-      if (ingredient === "鶏むね肉") {
-        recipe = "鶏むね肉の照り焼き";
-      } else if (ingredient === "玉ねぎ") {
-        recipe = "オニオンスープ";
-      } else if (ingredient === "じゃがいも") {
-        recipe = "肉じゃが";
-      } else if (ingredient === "ほうれん草") {
-        recipe = "ほうれん草の胡麻和え";
+    // 材料を選択/解除する処理
+    function toggleIngredient(ingredient, btn) {
+      const index = selectedIngredients.indexOf(ingredient);
+      if (index === -1) {
+        selectedIngredients.push(ingredient);
+        btn.classList.add("selected");
       } else {
-        recipe = "レシピが見つかりません";
+        selectedIngredients.splice(index, 1);
+        btn.classList.remove("selected");
+      }
+    }
+
+    // レシピ判定処理（決め打ち）
+    function showRecipe() {
+      let recipe = "レシピが見つかりません";
+
+      const combo = selectedIngredients.sort().join(",");
+
+      if (combo === "じゃがいも,玉ねぎ") {
+        recipe = "肉じゃが";
+      } else if (combo === "鶏むね肉,玉ねぎ") {
+        recipe = "鶏むね肉の親子丼風";
+      } else if (combo === "ほうれん草,玉ねぎ") {
+        recipe = "ほうれん草と玉ねぎの味噌汁";
+      } else if (combo === "鶏むね肉") {
+        recipe = "鶏むね肉の照り焼き";
+      } else if (combo === "玉ねぎ") {
+        recipe = "オニオンスープ";
+      } else if (combo === "じゃがいも") {
+        recipe = "フライドポテト";
+      } else if (combo === "ほうれん草") {
+        recipe = "ほうれん草の胡麻和え";
       }
 
-      document.getElementById("result").textContent = ingredient + " におすすめの料理は: " + recipe;
+      document.getElementById("result").textContent =
+        "選んだ材料: " + (selectedIngredients.join("、") || "なし") + "\n" +
+        "おすすめ料理: " + recipe;
     }
   </script>
 </body>
 </html>
+
