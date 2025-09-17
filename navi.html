@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <meta charset="UTF-8">
+  <title>献立アシスタント</title>
 </head>
 <body>
   <h2>献立アシスタント</h2>
-  <textarea id="input" placeholder="例: 疲労回復に良い料理、材料: 鶏むね肉と玉ねぎ"></textarea>
+  <textarea id="input" placeholder="材料を入力"></textarea>
   <button onclick="send()">送信</button>
   <pre id="result"></pre>
 
   <script>
-    async function send(){
+    function send(){
       const text = document.getElementById("input").value;
-
-      // 🚀 外部APIを直接呼び出す（サーバー不要）
-      const res = await fetch("https://api.example.com/recipe?text=" + encodeURIComponent(text));
-      const data = await res.json();
-
-      document.getElementById("result").textContent = data.recipe;
+      document.getElementById("result").textContent = "あなたが入力したのは: " + text;
     }
   </script>
 </body>
 </html>
+
