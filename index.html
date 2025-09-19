@@ -6,25 +6,21 @@
 </head>
 <body>
   <h2>楽天レシピ検索</h2>
-  <input id="keyword" placeholder="材料を入力（例: カレー, 卵）">
+  <input id="keyword" placeholder="材料を入力（例: 鶏肉 玉ねぎ）">
   <button onclick="searchRecipe()">検索</button>
 
   <div id="results"></div>
 
   <script>
-    // ★ ここにあなたのアプリケーションIDを設定
-    const appId = "1035026605843192324";  
-    
-    // ★ アフィリエイトID（任意、報酬が欲しいときだけ使う）
+    const appId = "1035026605843192324";  // あなたのアプリID
     const affiliateId = "4c7f93d2.150d2f9a.4c7f93d3.06b1f012";
 
     async function searchRecipe() {
       const keyword = document.getElementById("keyword").value;
 
-      // 楽天レシピAPI: レシピランキングAPIを例に
-      let url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=${appId}`;
+      // キーワード検索API
+      let url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=${appId}&keyword=${encodeURIComponent(keyword)}`;
 
-      // affiliateId を使う場合は追加
       if (affiliateId) {
         url += `&affiliateId=${affiliateId}`;
       }
@@ -33,21 +29,28 @@
       const data = await res.json();
 
       let html = "<h3>検索結果</h3>";
-      data.result.forEach(r => {
-        html += `
-          <div style="margin-bottom:15px;">
-            <b>${r.recipeTitle}</b><br>
-            <img src="${r.foodImageUrl}" width="200"><br>
-            <a href="${r.recipeUrl}" target="_blank">レシピを見る</a>
-          </div>
-        `;
-      });
+
+      if (data.result && data.result.length > 0) {
+        data.result.forEach(r => {
+          html += `
+            <div style="margin-bottom:15px;">
+              <b>${r.recipeTitle}</b><br>
+              <img src="${r.foodImageUrl}" width="200"><br>
+              <a href="${r.recipeUrl}" target="_blank">レシピを見る</a>
+            </div>
+          `;
+        });
+      } else {
+        html += "<p>レシピが見つかりませんでした。</p>";
+      }
 
       document.getElementById("results").innerHTML = html;
     }
   </script>
 </body>
 </html>
+
+
 
 
 
