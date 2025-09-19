@@ -7,6 +7,7 @@
     button { margin: 5px; padding: 10px; }
     .selected { background-color: lightgreen; }
     img { max-width: 300px; margin-top: 10px; border-radius: 8px; box-shadow: 2px 2px 6px rgba(0,0,0,0.2); }
+    .recipe-box { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -31,6 +32,7 @@
   <h3>おすすめ料理</h3>
   <pre id="result"></pre>
   <div id="imageContainer"></div>
+  <div id="recipeBox" class="recipe-box"></div>
 
   <script>
     let selectedIngredients = [];
@@ -47,45 +49,51 @@
     }
 
     function showRecipe() {
-      let recipe = "レシピが見つかりません";
+      let recipeName = "レシピが見つかりません";
       let image = "";
+      let instructions = "";
 
       const has = (ing) => selectedIngredients.includes(ing);
 
-      // 優先順位つきのルール
+      // 優先ルール
       if (has("豚肉") && has("じゃがいも") && has("玉ねぎ") && has("にんじん")) {
-        recipe = "カレーライス";
+        recipeName = "カレーライス";
         image = "https://example.com/curry.jpg";
+        instructions = "1. 材料を切る\n2. 豚肉と野菜を炒める\n3. 水とルーを入れて煮込む\n4. ご飯にかけて完成！";
       } else if (has("牛肉") && has("玉ねぎ")) {
-        recipe = "牛丼";
+        recipeName = "牛丼";
         image = "https://example.com/gyudon.jpg";
+        instructions = "1. 玉ねぎを薄切りにする\n2. 鍋に出汁・醤油・砂糖を入れて煮る\n3. 牛肉と玉ねぎを煮込む\n4. ご飯にのせて完成！";
       } else if (has("卵") && has("トマト")) {
-        recipe = "トマトと卵の炒め物";
+        recipeName = "トマトと卵の炒め物";
         image = "https://example.com/tomatoegg.jpg";
+        instructions = "1. トマトを切る\n2. 卵を溶いて炒める\n3. トマトを加えて炒め合わせる\n4. 塩胡椒で味付けして完成！";
       } else if (has("鶏むね肉") && has("玉ねぎ")) {
-        recipe = "親子丼";
+        recipeName = "親子丼";
         image = "https://example.com/oyakodon.jpg";
+        instructions = "1. 玉ねぎを薄切りにする\n2. 鶏肉を一口大に切る\n3. 出汁と調味料で鶏肉と玉ねぎを煮る\n4. 溶き卵を回し入れて完成！";
       } else if (has("豚肉") && has("キャベツ")) {
-        recipe = "回鍋肉（ホイコーロー）";
+        recipeName = "回鍋肉（ホイコーロー）";
         image = "https://example.com/hoikoro.jpg";
+        instructions = "1. 豚肉とキャベツを切る\n2. 豚肉を炒める\n3. キャベツを加えて炒める\n4. 味噌ダレを加えて完成！";
       } else {
-        // 単品レシピ（fallback）
+        // 単品レシピ
         const singleRecipes = {
-          "鶏むね肉": ["鶏むね肉の照り焼き", "https://example.com/chicken.jpg"],
-          "豚肉": ["豚の生姜焼き", "https://example.com/pork.jpg"],
-          "牛肉": ["牛丼", "https://example.com/gyudon.jpg"],
-          "玉ねぎ": ["オニオンスープ", "https://example.com/onionsoup.jpg"],
-          "じゃがいも": ["ポテトサラダ", "https://example.com/potatosalad.jpg"],
-          "にんじん": ["にんじんのきんぴら", "https://example.com/carrot.jpg"],
-          "ほうれん草": ["ほうれん草の胡麻和え", "https://example.com/spinach.jpg"],
-          "キャベツ": ["キャベツの千切りサラダ", "https://example.com/cabbage.jpg"],
-          "トマト": ["カプレーゼ", "https://example.com/caprese.jpg"],
-          "卵": ["卵焼き", "https://example.com/tamagoyaki.jpg"]
+          "鶏むね肉": ["鶏むね肉の照り焼き", "https://example.com/chicken.jpg", "1. 鶏むね肉を切る\n2. 醤油・みりんで炒める\n3. 照りが出たら完成！"],
+          "豚肉": ["豚の生姜焼き", "https://example.com/pork.jpg", "1. 豚肉を切る\n2. 生姜と醤油で炒める\n3. 火が通ったら完成！"],
+          "牛肉": ["牛丼", "https://example.com/gyudon.jpg", "1. 玉ねぎと牛肉を煮る\n2. ご飯にのせて完成！"],
+          "玉ねぎ": ["オニオンスープ", "https://example.com/onionsoup.jpg", "1. 玉ねぎを炒める\n2. 水とコンソメを入れて煮る\n3. 塩胡椒で味を整えて完成！"],
+          "じゃがいも": ["ポテトサラダ", "https://example.com/potatosalad.jpg", "1. じゃがいもを茹でて潰す\n2. 野菜と混ぜる\n3. マヨネーズで和えて完成！"],
+          "にんじん": ["にんじんのきんぴら", "https://example.com/carrot.jpg", "1. にんじんを細切りにする\n2. ごま油で炒める\n3. 醤油と砂糖で味付けして完成！"],
+          "ほうれん草": ["ほうれん草の胡麻和え", "https://example.com/spinach.jpg", "1. ほうれん草を茹でる\n2. すりごまと醤油で和える\n3. 完成！"],
+          "キャベツ": ["キャベツの千切りサラダ", "https://example.com/cabbage.jpg", "1. キャベツを千切りにする\n2. ドレッシングをかけて完成！"],
+          "トマト": ["カプレーゼ", "https://example.com/caprese.jpg", "1. トマトを切る\n2. モッツァレラチーズと交互に並べる\n3. オリーブオイルをかけて完成！"],
+          "卵": ["卵焼き", "https://example.com/tamagoyaki.jpg", "1. 卵を溶く\n2. 砂糖と醤油を混ぜる\n3. 卵焼き器で焼いて完成！"]
         };
 
         for (let i of selectedIngredients) {
           if (singleRecipes[i]) {
-            [recipe, image] = singleRecipes[i];
+            [recipeName, image, instructions] = singleRecipes[i];
             break;
           }
         }
@@ -93,10 +101,14 @@
 
       document.getElementById("result").textContent =
         "選んだ材料: " + (selectedIngredients.join("、") || "なし") + "\n" +
-        "おすすめ料理: " + recipe;
+        "おすすめ料理: " + recipeName;
 
       document.getElementById("imageContainer").innerHTML = image
-        ? `<img src="${image}" alt="${recipe}">`
+        ? `<img src="${image}" alt="${recipeName}">`
+        : "";
+
+      document.getElementById("recipeBox").textContent = instructions
+        ? "【作り方】\n" + instructions
         : "";
     }
   </script>
