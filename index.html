@@ -4,19 +4,9 @@
   <meta charset="UTF-8">
   <title>献立アシスタント</title>
   <style>
-    button {
-      margin: 5px;
-      padding: 10px;
-    }
-    .selected {
-      background-color: lightgreen;
-    }
-    img {
-      max-width: 300px;
-      margin-top: 10px;
-      border-radius: 8px;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-    }
+    button { margin: 5px; padding: 10px; }
+    .selected { background-color: lightgreen; }
+    img { max-width: 300px; margin-top: 10px; border-radius: 8px; box-shadow: 2px 2px 6px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
@@ -32,6 +22,8 @@
   <button onclick="toggleIngredient('にんじん', this)">にんじん</button>
   <button onclick="toggleIngredient('ほうれん草', this)">ほうれん草</button>
   <button onclick="toggleIngredient('キャベツ', this)">キャベツ</button>
+  <button onclick="toggleIngredient('トマト', this)">トマト</button>
+  <button onclick="toggleIngredient('卵', this)">卵</button>
 
   <br><br>
   <button onclick="showRecipe()">おすすめ料理を表示</button>
@@ -58,45 +50,45 @@
       let recipe = "レシピが見つかりません";
       let image = "";
 
-      const combo = selectedIngredients.sort().join(",");
+      const has = (ing) => selectedIngredients.includes(ing);
 
-      // 単品レシピ
-      if (combo === "鶏むね肉") {
-        recipe = "鶏むね肉の照り焼き";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104784/main_photo/54d4b9b8-鶏むね肉.jpg";
-      } else if (combo === "豚肉") {
-        recipe = "豚の生姜焼き";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104791/main_photo/豚の生姜焼き.jpg";
-      } else if (combo === "牛肉") {
-        recipe = "牛丼";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104799/main_photo/牛丼.jpg";
-      } else if (combo === "玉ねぎ") {
-        recipe = "オニオンスープ";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104800/main_photo/オニオンスープ.jpg";
-      } else if (combo === "じゃがいも") {
-        recipe = "ポテトサラダ";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104810/main_photo/ポテトサラダ.jpg";
-      } else if (combo === "にんじん") {
-        recipe = "にんじんのきんぴら";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104811/main_photo/にんじんのきんぴら.jpg";
-      } else if (combo === "ほうれん草") {
-        recipe = "ほうれん草の胡麻和え";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104812/main_photo/ほうれん草胡麻和え.jpg";
-      } else if (combo === "キャベツ") {
-        recipe = "キャベツの千切りサラダ";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104813/main_photo/キャベツサラダ.jpg";
-      }
-
-      // 複数組み合わせレシピ（例）
-      else if (combo === "じゃがいも,玉ねぎ,にんじん,牛肉") {
-        recipe = "ビーフシチュー";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104814/main_photo/ビーフシチュー.jpg";
-      } else if (combo === "じゃがいも,玉ねぎ,にんじん,豚肉") {
+      // 優先順位つきのルール
+      if (has("豚肉") && has("じゃがいも") && has("玉ねぎ") && has("にんじん")) {
         recipe = "カレーライス";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104815/main_photo/カレーライス.jpg";
-      } else if (combo === "豚肉,キャベツ") {
+        image = "https://example.com/curry.jpg";
+      } else if (has("牛肉") && has("玉ねぎ")) {
+        recipe = "牛丼";
+        image = "https://example.com/gyudon.jpg";
+      } else if (has("卵") && has("トマト")) {
+        recipe = "トマトと卵の炒め物";
+        image = "https://example.com/tomatoegg.jpg";
+      } else if (has("鶏むね肉") && has("玉ねぎ")) {
+        recipe = "親子丼";
+        image = "https://example.com/oyakodon.jpg";
+      } else if (has("豚肉") && has("キャベツ")) {
         recipe = "回鍋肉（ホイコーロー）";
-        image = "https://www.kurashiru.com/system/recipe_thumbnails/104816/main_photo/ホイコーロー.jpg";
+        image = "https://example.com/hoikoro.jpg";
+      } else {
+        // 単品レシピ（fallback）
+        const singleRecipes = {
+          "鶏むね肉": ["鶏むね肉の照り焼き", "https://example.com/chicken.jpg"],
+          "豚肉": ["豚の生姜焼き", "https://example.com/pork.jpg"],
+          "牛肉": ["牛丼", "https://example.com/gyudon.jpg"],
+          "玉ねぎ": ["オニオンスープ", "https://example.com/onionsoup.jpg"],
+          "じゃがいも": ["ポテトサラダ", "https://example.com/potatosalad.jpg"],
+          "にんじん": ["にんじんのきんぴら", "https://example.com/carrot.jpg"],
+          "ほうれん草": ["ほうれん草の胡麻和え", "https://example.com/spinach.jpg"],
+          "キャベツ": ["キャベツの千切りサラダ", "https://example.com/cabbage.jpg"],
+          "トマト": ["カプレーゼ", "https://example.com/caprese.jpg"],
+          "卵": ["卵焼き", "https://example.com/tamagoyaki.jpg"]
+        };
+
+        for (let i of selectedIngredients) {
+          if (singleRecipes[i]) {
+            [recipe, image] = singleRecipes[i];
+            break;
+          }
+        }
       }
 
       document.getElementById("result").textContent =
@@ -110,5 +102,3 @@
   </script>
 </body>
 </html>
-
-
