@@ -12,21 +12,26 @@
   <div id="results"></div>
 
   <script>
-    1035026605843192324
-    const appId = "1056789012345678901";  // 楽天デベロッパーズでもらったIDを入れる
+    // ★ ここにあなたのアプリケーションIDを設定
+    const appId = "1035026605843192324";  
+    
+    // ★ アフィリエイトID（任意、報酬が欲しいときだけ使う）
+    const affiliateId = "4c7f93d2.150d2f9a.4c7f93d3.06b1f012";
 
     async function searchRecipe() {
-      // 入力されたキーワード
       const keyword = document.getElementById("keyword").value;
 
-      // 楽天レシピAPIのURL
-      const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=${appId}&categoryId=30`;
+      // 楽天レシピAPI: レシピランキングAPIを例に
+      let url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=${appId}`;
 
-      // データ取得
+      // affiliateId を使う場合は追加
+      if (affiliateId) {
+        url += `&affiliateId=${affiliateId}`;
+      }
+
       const res = await fetch(url);
       const data = await res.json();
 
-      // 結果を表示
       let html = "<h3>検索結果</h3>";
       data.result.forEach(r => {
         html += `
@@ -43,4 +48,6 @@
   </script>
 </body>
 </html>
+
+
 
