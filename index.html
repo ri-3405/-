@@ -2,46 +2,44 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>楽天レシピキーワード検索</title>
+  <title>クックパッドキーワード検索</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+    .recipe img { display: block; margin-top: 5px; }
+  </style>
 </head>
 <body>
-  <h2>楽天レシピ検索</h2>
+  <h2>クックパッド検索</h2>
   <input id="keyword" placeholder="例: 鶏肉 玉ねぎ">
   <button onclick="searchRecipe()">検索</button>
 
   <div id="results"></div>
 
   <script>
-    // あなたのアプリIDを入れる
-    const appId = "1035026605843192324";  
-    const affiliateId = "4c7f93d2.150d2f9a.4c7f93d3.06b1f012";
-
     async function searchRecipe() {
-      const kw = document.getElementById("keyword").value;
+      const kw = document.getElementById("keyword").value.trim();
       if (!kw) {
         alert("キーワードを入力してください");
         return;
       }
 
-      // ★ レシピ検索API
-      let url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryList/20170426?applicationId=${appId}&keyword=${encodeURIComponent(kw)}&format=json`;
-      if (affiliateId) {
-        url += `&affiliateId=${affiliateId}`;
-      }
+      // 非公式API URL（例: 自作プロキシやRapidAPI経由）
+      const apiUrl = `https://example-proxy.com/cookpad?keyword=${encodeURIComponent(kw)}`;
 
       try {
-        const res = await fetch(url);
+        const res = await fetch(apiUrl);
         const data = await res.json();
 
         let html = "<h3>検索結果</h3>";
 
-        if (data.result && data.result.length > 0) {
-          data.result.forEach(r => {
+        if (data.recipes && data.recipes.length > 0) {
+          data.recipes.forEach(r => {
             html += `
-              <div style="margin-bottom:15px;">
-                <b>${r.recipeTitle}</b><br>
-                <img src="${r.foodImageUrl}" width="200"><br>
-                <a href="${r.recipeUrl}" target="_blank">レシピを見る</a>
+              <div class="recipe">
+                <b>${r.title}</b><br>
+                <img src="${r.image}" width="200"><br>
+                <a href="${r.url}" target="_blank">レシピを見る</a>
               </div>
             `;
           });
@@ -59,6 +57,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
