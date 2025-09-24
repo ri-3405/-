@@ -1,37 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クックパッドキーワード検索</title>
+  <title>クックパッド簡単検索</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
+    .buttons { margin-bottom: 20px; }
+    .buttons button { 
+      margin: 5px; padding: 10px 15px; 
+      border: none; border-radius: 5px; 
+      background: #ff9933; color: white; cursor: pointer;
+    }
+    .buttons button:hover { background: #cc6600; }
     .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
     .recipe img { display: block; margin-top: 5px; }
   </style>
 </head>
 <body>
-  <h2>クックパッド検索</h2>
-  <input id="keyword" placeholder="例: 鶏肉 玉ねぎ">
-  <button onclick="searchRecipe()">検索</button>
+  <h2>クックパッド検索（カテゴリボタン）</h2>
+  <div class="buttons">
+    <button onclick="searchRecipe('牛肉')">牛肉</button>
+    <button onclick="searchRecipe('鶏肉')">鶏肉</button>
+    <button onclick="searchRecipe('豚肉')">豚肉</button>
+    <button onclick="searchRecipe('野菜')">すべての野菜</button>
+    <button onclick="searchRecipe('魚')">魚</button>
+    <button onclick="searchRecipe('卵')">卵</button>
+    <button onclick="searchRecipe('豆腐')">豆腐</button>
+    <button onclick="searchRecipe('ご飯')">ご飯もの</button>
+    <button onclick="searchRecipe('麺類')">麺類</button>
+    <button onclick="searchRecipe('スープ')">スープ</button>
+    <button onclick="searchRecipe('デザート')">デザート</button>
+    <!-- 必要に応じてもっと追加してOK -->
+  </div>
 
   <div id="results"></div>
 
   <script>
-    async function searchRecipe() {
-      const kw = document.getElementById("keyword").value.trim();
-      if (!kw) {
-        alert("キーワードを入力してください");
-        return;
-      }
+    async function searchRecipe(keyword) {
+      document.getElementById("results").innerHTML = `<p>「${keyword}」のレシピを検索中...</p>`;
 
-      // 非公式API URL（例: 自作プロキシやRapidAPI経由）
-      const apiUrl = `https://example-proxy.com/cookpad?keyword=${encodeURIComponent(kw)}`;
+      // 非公式APIのURLに差し替えてください
+      const apiUrl = `https://example-proxy.com/cookpad?keyword=${encodeURIComponent(keyword)}`;
 
       try {
         const res = await fetch(apiUrl);
         const data = await res.json();
 
-        let html = "<h3>検索結果</h3>";
+        let html = `<h3>「${keyword}」の検索結果</h3>`;
 
         if (data.recipes && data.recipes.length > 0) {
           data.recipes.forEach(r => {
@@ -57,7 +72,6 @@
   </script>
 </body>
 </html>
-
 
 
 
