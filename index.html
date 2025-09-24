@@ -12,7 +12,7 @@
       background: #ff9933; color: white; cursor: pointer;
     }
     .buttons button:hover { background: #cc6600; }
-    select { padding: 8px; font-size: 16px; margin-left: 10px; }
+    select { padding: 8px; font-size: 16px; margin: 10px 0; width: 250px; height: 120px; }
     .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
     .recipe img { display: block; margin-top: 5px; }
   </style>
@@ -30,28 +30,41 @@
     <button onclick="searchRecipe('豆腐')">豆腐</button>
   </div>
 
-  <!-- 野菜カテゴリプルダウン -->
-  <label for="vegSelect">野菜カテゴリ: </label>
-  <select id="vegSelect" onchange="selectVeg()">
-    <option value="">選んでください</option>
+  <!-- 野菜カテゴリマルチセレクト -->
+  <label for="vegSelect">野菜カテゴリ（複数選択可）:</label><br>
+  <select id="vegSelect" multiple>
     <option value="じゃがいも">根菜類（じゃがいも, にんじん, 大根, れんこん）</option>
     <option value="キャベツ">葉物野菜（キャベツ, ほうれん草, レタス, 小松菜）</option>
     <option value="トマト">果菜類（トマト, なす, きゅうり, ピーマン）</option>
     <option value="しいたけ">きのこ類（しいたけ, しめじ, えのき, まいたけ）</option>
     <option value="枝豆">豆類・その他（枝豆, いんげん, そら豆, とうもろこし）</option>
   </select>
+  <br>
+  <button onclick="searchVeg()">選択した野菜で検索</button>
 
   <div id="results"></div>
 
   <script>
-    // プルダウン用
-    function selectVeg() {
-      const veg = document.getElementById("vegSelect").value;
-      if (veg) searchRecipe(veg);
+    // 野菜複数検索
+    function searchVeg() {
+      const select = document.getElementById("vegSelect");
+      const selected = Array.from(select.selectedOptions).map(o => o.value);
+
+      if (selected.length === 0) {
+        alert("野菜カテゴリを選んでください");
+        return;
+      }
+
+      // 選んだ食材ごとに検索を実行
+      selected.forEach(keyword => searchRecipe(keyword, true));
     }
 
-    async function searchRecipe(keyword) {
-      document.getElementById("results").innerHTML = `<p>「${keyword}」のレシピを検索中...</p>`;
+    async function searchRecipe(keyword, append = false) {
+      if (!append) {
+        document.getElementById("results").innerHTML = "";
+      }
+      const container = document.getElementById("results");
+      container.innerHTML += `<p>「${keyword}」のレシピを検索中...</p>`;
 
       // ❗ここを本物の非公式Cookpad APIのURLに変更してください
       const apiUrl = `https://example-proxy.com/cookpad?keyword=${encodeURIComponent(keyword)}`;
@@ -76,17 +89,16 @@
           html += "<p>レシピが見つかりませんでした。</p>";
         }
 
-        document.getElementById("results").innerHTML = html;
+        container.innerHTML += html;
 
       } catch (e) {
-        document.getElementById("results").innerHTML = "<p>エラーが発生しました。（APIのURLを確認してください）</p>";
+        container.innerHTML += `<p>「${keyword}」の検索中にエラーが発生しました。（APIのURLを確認してください）</p>`;
         console.error(e);
       }
     }
   </script>
 </body>
 </html>
-
 
 
 
