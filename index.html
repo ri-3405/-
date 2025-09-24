@@ -57,15 +57,15 @@
       document.getElementById("results").innerHTML = "";
 
       // 選んだカテゴリごとに検索
-      selected.forEach(keyword => searchRecipe(keyword, true));
+      selected.forEach(keyword => searchRecipe(keyword));
     }
 
-    async function searchRecipe(keyword, append = false) {
+    async function searchRecipe(keyword) {
       const container = document.getElementById("results");
       container.innerHTML += `<p>「${keyword}」のレシピを検索中...</p>`;
 
-      // ❗ここを本物の非公式Cookpad APIのURLに変更してください
-      const apiUrl = `https://example-proxy.com/cookpad?keyword=${encodeURIComponent(keyword)}`;
+      // ❗ここを自分のVercel APIのURLに置き換える
+      const apiUrl = `https://YOUR-PROJECT.vercel.app/api/search?keyword=${encodeURIComponent(keyword)}`;
 
       try {
         const res = await fetch(apiUrl);
@@ -97,6 +97,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
