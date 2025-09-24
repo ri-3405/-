@@ -12,34 +12,48 @@
       background: #ff9933; color: white; cursor: pointer;
     }
     .buttons button:hover { background: #cc6600; }
+    select { padding: 8px; font-size: 16px; margin-left: 10px; }
     .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
     .recipe img { display: block; margin-top: 5px; }
   </style>
 </head>
 <body>
-  <h2>クックパッド検索（カテゴリボタン）</h2>
+  <h2>クックパッド検索（カテゴリ選択）</h2>
+
+  <!-- 肉類ボタン -->
   <div class="buttons">
     <button onclick="searchRecipe('牛肉')">牛肉</button>
     <button onclick="searchRecipe('鶏肉')">鶏肉</button>
     <button onclick="searchRecipe('豚肉')">豚肉</button>
-    <button onclick="searchRecipe('野菜')">すべての野菜</button>
     <button onclick="searchRecipe('魚')">魚</button>
     <button onclick="searchRecipe('卵')">卵</button>
     <button onclick="searchRecipe('豆腐')">豆腐</button>
-    <button onclick="searchRecipe('ご飯')">ご飯もの</button>
-    <button onclick="searchRecipe('麺類')">麺類</button>
-    <button onclick="searchRecipe('スープ')">スープ</button>
-    <button onclick="searchRecipe('デザート')">デザート</button>
-    <!-- 必要に応じてもっと追加してOK -->
   </div>
+
+  <!-- 野菜カテゴリプルダウン -->
+  <label for="vegSelect">野菜カテゴリ: </label>
+  <select id="vegSelect" onchange="selectVeg()">
+    <option value="">選んでください</option>
+    <option value="じゃがいも">根菜類（じゃがいも, にんじん, 大根, れんこん）</option>
+    <option value="キャベツ">葉物野菜（キャベツ, ほうれん草, レタス, 小松菜）</option>
+    <option value="トマト">果菜類（トマト, なす, きゅうり, ピーマン）</option>
+    <option value="しいたけ">きのこ類（しいたけ, しめじ, えのき, まいたけ）</option>
+    <option value="枝豆">豆類・その他（枝豆, いんげん, そら豆, とうもろこし）</option>
+  </select>
 
   <div id="results"></div>
 
   <script>
+    // プルダウン用
+    function selectVeg() {
+      const veg = document.getElementById("vegSelect").value;
+      if (veg) searchRecipe(veg);
+    }
+
     async function searchRecipe(keyword) {
       document.getElementById("results").innerHTML = `<p>「${keyword}」のレシピを検索中...</p>`;
 
-      // 非公式APIのURLに差し替えてください
+      // ❗ここを本物の非公式Cookpad APIのURLに変更してください
       const apiUrl = `https://example-proxy.com/cookpad?keyword=${encodeURIComponent(keyword)}`;
 
       try {
@@ -65,14 +79,13 @@
         document.getElementById("results").innerHTML = html;
 
       } catch (e) {
-        document.getElementById("results").innerHTML = "<p>エラーが発生しました。</p>";
+        document.getElementById("results").innerHTML = "<p>エラーが発生しました。（APIのURLを確認してください）</p>";
         console.error(e);
       }
     }
   </script>
 </body>
 </html>
-
 
 
 
