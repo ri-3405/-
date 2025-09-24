@@ -2,37 +2,35 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クックパッド簡単検索</title>
+  <title>クックパッド複数カテゴリ検索</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
-    .buttons { margin-bottom: 20px; }
-    .buttons button { 
-      margin: 5px; padding: 10px 15px; 
+    select { padding: 8px; font-size: 16px; margin: 10px 0; width: 280px; height: 200px; }
+    button { 
+      margin: 10px 0; padding: 10px 15px; 
       border: none; border-radius: 5px; 
       background: #ff9933; color: white; cursor: pointer;
     }
-    .buttons button:hover { background: #cc6600; }
-    select { padding: 8px; font-size: 16px; margin: 10px 0; width: 250px; height: 120px; }
+    button:hover { background: #cc6600; }
     .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
     .recipe img { display: block; margin-top: 5px; }
   </style>
 </head>
 <body>
-  <h2>クックパッド検索（カテゴリ選択）</h2>
+  <h2>クックパッド複数カテゴリ検索</h2>
 
-  <!-- 肉類ボタン -->
-  <div class="buttons">
-    <button onclick="searchRecipe('牛肉')">牛肉</button>
-    <button onclick="searchRecipe('鶏肉')">鶏肉</button>
-    <button onclick="searchRecipe('豚肉')">豚肉</button>
-    <button onclick="searchRecipe('魚')">魚</button>
-    <button onclick="searchRecipe('卵')">卵</button>
-    <button onclick="searchRecipe('豆腐')">豆腐</button>
-  </div>
+  <!-- 全カテゴリをまとめたマルチセレクト -->
+  <label for="categorySelect">カテゴリを選択（複数可）:</label><br>
+  <select id="categorySelect" multiple>
+    <!-- 肉・魚系 -->
+    <option value="牛肉">牛肉</option>
+    <option value="鶏肉">鶏肉</option>
+    <option value="豚肉">豚肉</option>
+    <option value="魚">魚</option>
+    <option value="卵">卵</option>
+    <option value="豆腐">豆腐</option>
 
-  <!-- 野菜カテゴリマルチセレクト -->
-  <label for="vegSelect">野菜カテゴリ（複数選択可）:</label><br>
-  <select id="vegSelect" multiple>
+    <!-- 野菜系 -->
     <option value="じゃがいも">根菜類（じゃがいも, にんじん, 大根, れんこん）</option>
     <option value="キャベツ">葉物野菜（キャベツ, ほうれん草, レタス, 小松菜）</option>
     <option value="トマト">果菜類（トマト, なす, きゅうり, ピーマン）</option>
@@ -40,29 +38,29 @@
     <option value="枝豆">豆類・その他（枝豆, いんげん, そら豆, とうもろこし）</option>
   </select>
   <br>
-  <button onclick="searchVeg()">選択した野菜で検索</button>
+  <button onclick="searchCategories()">選択したカテゴリで検索</button>
 
   <div id="results"></div>
 
   <script>
-    // 野菜複数検索
-    function searchVeg() {
-      const select = document.getElementById("vegSelect");
+    // 選択したカテゴリでまとめて検索
+    function searchCategories() {
+      const select = document.getElementById("categorySelect");
       const selected = Array.from(select.selectedOptions).map(o => o.value);
 
       if (selected.length === 0) {
-        alert("野菜カテゴリを選んでください");
+        alert("カテゴリを選んでください");
         return;
       }
 
-      // 選んだ食材ごとに検索を実行
+      // 結果エリアを初期化
+      document.getElementById("results").innerHTML = "";
+
+      // 選んだカテゴリごとに検索
       selected.forEach(keyword => searchRecipe(keyword, true));
     }
 
     async function searchRecipe(keyword, append = false) {
-      if (!append) {
-        document.getElementById("results").innerHTML = "";
-      }
       const container = document.getElementById("results");
       container.innerHTML += `<p>「${keyword}」のレシピを検索中...</p>`;
 
@@ -99,7 +97,6 @@
   </script>
 </body>
 </html>
-
 
 
 
