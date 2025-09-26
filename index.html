@@ -2,19 +2,18 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>材料からレシピ検索</title>
+  <title>レシピ検索サービス</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h1 { color: #333; }
+    body { font-family: sans-serif; padding: 20px; }
     .ingredients { margin-bottom: 20px; }
-    .ingredients label { margin-right: 15px; display: inline-block; }
-    button { padding: 8px 16px; }
-    ul { margin-top: 20px; }
-    li { margin-bottom: 10px; }
+    .recipe { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    button { margin-top: 10px; padding: 5px 10px; }
   </style>
 </head>
 <body>
-  <h1>材料からレシピ検索</h1>
+  <h1>レシピ検索サービス</h1>
+  <p>材料を選んでください（2個以上）</p>
+
   <div class="ingredients">
     <label><input type="checkbox" value="牛肉">牛肉</label>
     <label><input type="checkbox" value="鶏肉">鶏肉</label>
@@ -28,91 +27,158 @@
     <label><input type="checkbox" value="キノコ類">キノコ類</label>
     <label><input type="checkbox" value="豆類">豆類</label>
   </div>
-  <button onclick="searchRecipes()">検索</button>
-  <ul id="results"></ul>
+
+  <button onclick="searchRecipes()">検索する</button>
+
+  <h2>検索結果</h2>
+  <div id="results"></div>
 
   <script>
-    // スプレッドシートのデータを全部ここに埋め込み
+    // === レシピデータ（あなたのリスト全部入り！） ===
     const recipes = [
-      { ingredients: ["牛肉","根菜類"], title: "牛肉とにんじんの煮物", link: "" },
-      { ingredients: ["牛肉","葉物野菜"], title: "牛肉とほうれん草の炒め物", link: "" },
-      { ingredients: ["牛肉","果菜類"], title: "牛肉とトマトの炒め物", link: "" },
-      { ingredients: ["牛肉","キノコ類"], title: "牛肉としいたけのバター炒め", link: "" },
-      { ingredients: ["牛肉","豆類"], title: "牛肉と枝豆の炒め物", link: "" },
-      { ingredients: ["鶏肉","根菜類"], title: "鶏肉と大根の煮物", link: "" },
-      { ingredients: ["鶏肉","葉物野菜"], title: "鶏肉とキャベツの炒め物", link: "" },
-      { ingredients: ["鶏肉","果菜類"], title: "鶏肉となすの味噌炒め", link: "" },
-      { ingredients: ["鶏肉","キノコ類"], title: "鶏肉としめじのクリーム煮", link: "" },
-      { ingredients: ["鶏肉","豆類"], title: "鶏肉といんげんの炒め物", link: "" },
-      { ingredients: ["豚肉","根菜類"], title: "豚肉とごぼうのきんぴら", link: "" },
-      { ingredients: ["豚肉","葉物野菜"], title: "豚肉と小松菜のオイスター炒め", link: "" },
-      { ingredients: ["豚肉","果菜類"], title: "豚肉とピーマンの炒め物", link: "" },
-      { ingredients: ["豚肉","キノコ類"], title: "豚肉とえのきの炒め物", link: "" },
-      { ingredients: ["豚肉","豆類"], title: "豚肉とそら豆の煮込み", link: "" },
-      { ingredients: ["魚","根菜類"], title: "魚とじゃがいもの煮付け", link: "" },
-      { ingredients: ["魚","葉物野菜"], title: "魚とほうれん草のホイル焼き", link: "" },
-      { ingredients: ["魚","果菜類"], title: "魚とトマトの蒸し焼き", link: "" },
-      { ingredients: ["魚","キノコ類"], title: "魚とまいたけのバターソテー", link: "" },
-      { ingredients: ["魚","豆類"], title: "魚と枝豆の炊き込みご飯", link: "" },
-      { ingredients: ["卵","根菜類"], title: "卵とじゃがいものオムレツ", link: "" },
-      { ingredients: ["卵","葉物野菜"], title: "卵とキャベツの炒め物", link: "" },
-      { ingredients: ["卵","果菜類"], title: "卵とトマトの中華炒め", link: "" },
-      { ingredients: ["卵","キノコ類"], title: "卵としいたけのスープ", link: "" },
-      { ingredients: ["卵","豆類"], title: "卵と枝豆の炒め物", link: "" },
-      { ingredients: ["豆腐","根菜類"], title: "豆腐とにんじんの炒め煮", link: "" },
-      { ingredients: ["豆腐","葉物野菜"], title: "豆腐と小松菜の味噌汁", link: "" },
-      { ingredients: ["豆腐","果菜類"], title: "豆腐とナスの揚げ出し", link: "" },
-      { ingredients: ["豆腐","キノコ類"], title: "豆腐としめじの炒め物", link: "" },
-      { ingredients: ["豆腐","豆類"], title: "豆腐といんげんの和え物", link: "" },
-      { ingredients: ["牛肉","鶏肉","根菜類"], title: "牛肉と鶏肉の肉じゃが風煮物", link: "" },
-      { ingredients: ["豚肉","魚","葉物野菜"], title: "豚肉と魚とほうれん草の炒め物", link: "" },
-      { ingredients: ["卵","豆腐","果菜類"], title: "卵と豆腐とトマトの炒め物", link: "" },
-      { ingredients: ["鶏肉","豆腐","キノコ類"], title: "鶏肉と豆腐とえのきの煮物", link: "" },
-      { ingredients: ["牛肉","卵","葉物野菜"], title: "牛肉と卵とキャベツ炒め", link: "" },
-      { ingredients: ["牛肉","豆腐"], title: "牛肉と豆腐のすき煮", link: "" },
-      { ingredients: ["牛肉","卵"], title: "牛肉と卵の親子丼風", link: "" },
-      { ingredients: ["牛肉","魚"], title: "牛肉と鮭のスタミナ炒め", link: "" },
-      { ingredients: ["鶏肉","卵"], title: "鶏肉と卵の親子丼", link: "" },
-      { ingredients: ["鶏肉","豆腐"], title: "鶏肉と豆腐の鍋", link: "" },
-      { ingredients: ["鶏肉","魚"], title: "鶏肉と白身魚の揚げ物", link: "" },
-      { ingredients: ["豚肉","卵"], title: "豚肉と卵の炒め物", link: "" },
-      { ingredients: ["豚肉","豆腐"], title: "豚肉と豆腐の麻婆風", link: "" },
-      { ingredients: ["豚肉","魚"], title: "豚肉と鯖の味噌炒め", link: "" },
-      { ingredients: ["魚","卵"], title: "魚と卵の甘酢あん", link: "" },
-      { ingredients: ["魚","豆腐"], title: "魚と豆腐の煮付け", link: "" },
-      { ingredients: ["卵","豆腐"], title: "卵と豆腐のスープ", link: "" },
-      { ingredients: ["牛肉","根菜類","葉物野菜"], title: "牛肉と大根とキャベツ炒め", link: "" },
-      { ingredients: ["牛肉","葉物野菜","果菜類"], title: "牛肉とレタスとトマト炒め", link: "" },
-      { ingredients: ["牛肉","キノコ類","豆類"], title: "牛肉としいたけと枝豆の炒め物", link: "" },
-      // ……この後もあなたが送ってくれた全件を同じ形式で追加……
+      {ingredients:["牛肉","根菜類"], title:"牛肉とにんじんの煮物"},
+      {ingredients:["牛肉","葉物野菜"], title:"牛肉とほうれん草の炒め物"},
+      {ingredients:["牛肉","果菜類"], title:"牛肉とトマトの炒め物"},
+      {ingredients:["牛肉","キノコ類"], title:"牛肉としいたけのバター炒め"},
+      {ingredients:["牛肉","豆類"], title:"牛肉と枝豆の炒め物"},
+      {ingredients:["鶏肉","根菜類"], title:"鶏肉と大根の煮物"},
+      {ingredients:["鶏肉","葉物野菜"], title:"鶏肉とキャベツの炒め物"},
+      {ingredients:["鶏肉","果菜類"], title:"鶏肉となすの味噌炒め"},
+      {ingredients:["鶏肉","キノコ類"], title:"鶏肉としめじのクリーム煮"},
+      {ingredients:["鶏肉","豆類"], title:"鶏肉といんげんの炒め物"},
+      {ingredients:["豚肉","根菜類"], title:"豚肉とごぼうのきんぴら"},
+      {ingredients:["豚肉","葉物野菜"], title:"豚肉と小松菜のオイスター炒め"},
+      {ingredients:["豚肉","果菜類"], title:"豚肉とピーマンの炒め物"},
+      {ingredients:["豚肉","キノコ類"], title:"豚肉とえのきの炒め物"},
+      {ingredients:["豚肉","豆類"], title:"豚肉とそら豆の煮込み"},
+      {ingredients:["魚","根菜類"], title:"魚とじゃがいもの煮付け"},
+      {ingredients:["魚","葉物野菜"], title:"魚とほうれん草のホイル焼き"},
+      {ingredients:["魚","果菜類"], title:"魚とトマトの蒸し焼き"},
+      {ingredients:["魚","キノコ類"], title:"魚とまいたけのバターソテー"},
+      {ingredients:["魚","豆類"], title:"魚と枝豆の炊き込みご飯"},
+      {ingredients:["卵","根菜類"], title:"卵とじゃがいものオムレツ"},
+      {ingredients:["卵","葉物野菜"], title:"卵とキャベツの炒め物"},
+      {ingredients:["卵","果菜類"], title:"卵とトマトの中華炒め"},
+      {ingredients:["卵","キノコ類"], title:"卵としいたけのスープ"},
+      {ingredients:["卵","豆類"], title:"卵と枝豆の炒め物"},
+      {ingredients:["豆腐","根菜類"], title:"豆腐とにんじんの炒め煮"},
+      {ingredients:["豆腐","葉物野菜"], title:"豆腐と小松菜の味噌汁"},
+      {ingredients:["豆腐","果菜類"], title:"豆腐とナスの揚げ出し"},
+      {ingredients:["豆腐","キノコ類"], title:"豆腐としめじの炒め物"},
+      {ingredients:["豆腐","豆類"], title:"豆腐といんげんの和え物"},
+      {ingredients:["牛肉","鶏肉","根菜類"], title:"牛肉と鶏肉の肉じゃが風煮物"},
+      {ingredients:["豚肉","魚","葉物野菜"], title:"豚肉と魚とほうれん草の炒め物"},
+      {ingredients:["卵","豆腐","果菜類"], title:"卵と豆腐とトマトの炒め物"},
+      {ingredients:["鶏肉","豆腐","キノコ類"], title:"鶏肉と豆腐とえのきの煮物"},
+      {ingredients:["牛肉","卵","葉物野菜"], title:"牛肉と卵とキャベツ炒め"},
+      {ingredients:["牛肉","豆腐"], title:"牛肉と豆腐のすき煮"},
+      {ingredients:["牛肉","卵"], title:"牛肉と卵の親子丼風"},
+      {ingredients:["牛肉","魚"], title:"牛肉と鮭のスタミナ炒め"},
+      {ingredients:["鶏肉","卵"], title:"鶏肉と卵の親子丼"},
+      {ingredients:["鶏肉","豆腐"], title:"鶏肉と豆腐の鍋"},
+      {ingredients:["鶏肉","魚"], title:"鶏肉と白身魚の揚げ物"},
+      {ingredients:["豚肉","卵"], title:"豚肉と卵の炒め物"},
+      {ingredients:["豚肉","豆腐"], title:"豚肉と豆腐の麻婆風"},
+      {ingredients:["豚肉","魚"], title:"豚肉と鯖の味噌炒め"},
+      {ingredients:["魚","卵"], title:"魚と卵の甘酢あん"},
+      {ingredients:["魚","豆腐"], title:"魚と豆腐の煮付け"},
+      {ingredients:["卵","豆腐"], title:"卵と豆腐のスープ"},
+      {ingredients:["牛肉","根菜類","葉物野菜"], title:"牛肉と大根とキャベツ炒め"},
+      {ingredients:["牛肉","葉物野菜","果菜類"], title:"牛肉とレタスとトマト炒め"},
+      {ingredients:["牛肉","キノコ類","豆類"], title:"牛肉としいたけと枝豆の炒め物"},
+      {ingredients:["鶏肉","根菜類","果菜類"], title:"鶏肉とじゃがいもとトマト煮"},
+      {ingredients:["鶏肉","葉物野菜","豆類"], title:"鶏肉と小松菜と枝豆炒め"},
+      {ingredients:["鶏肉","キノコ類","卵"], title:"鶏肉としめじの卵炒め"},
+      {ingredients:["豚肉","根菜類","豆腐"], title:"豚肉と大根と豆腐の煮物"},
+      {ingredients:["豚肉","葉物野菜","果菜類"], title:"豚肉とキャベツとピーマン炒め"},
+      {ingredients:["豚肉","キノコ類","卵"], title:"豚肉とえのきの卵炒め"},
+      {ingredients:["魚","根菜類","豆類"], title:"魚とごぼうと枝豆の炊き込みご飯"},
+      {ingredients:["魚","葉物野菜","豆腐"], title:"魚とほうれん草と豆腐のスープ"},
+      {ingredients:["魚","果菜類","卵"], title:"魚とトマトの卵炒め"},
+      {ingredients:["卵","根菜類","葉物野菜"], title:"卵とじゃがいもとほうれん草のグラタン"},
+      {ingredients:["卵","果菜類","豆腐"], title:"卵とトマトと豆腐の中華スープ"},
+      {ingredients:["卵","キノコ類","豆類"], title:"卵とまいたけと枝豆の炒め物"},
+      {ingredients:["豆腐","根菜類","果菜類"], title:"豆腐と大根とトマトのサラダ"},
+      {ingredients:["豆腐","葉物野菜","卵"], title:"豆腐とキャベツと卵のスープ"},
+      {ingredients:["豆腐","キノコ類","魚"], title:"豆腐としめじと鮭の煮物"},
+      {ingredients:["牛肉","鶏肉","卵"], title:"牛肉と鶏肉と卵の炒め物"},
+      {ingredients:["鶏肉","豚肉","豆腐"], title:"鶏肉と豚肉と豆腐の煮込み"},
+      {ingredients:["豚肉","魚","卵"], title:"豚肉と魚と卵の炒め物"},
+      {ingredients:["魚","豆腐","キノコ類"], title:"魚と豆腐としいたけの煮物"},
+      {ingredients:["卵","豆腐","根菜類"], title:"卵と豆腐と大根のスープ"},
+      {ingredients:["牛肉","豆類","卵"], title:"牛肉と枝豆と卵の炒め物"},
+      {ingredients:["牛肉","豆腐","葉物野菜"], title:"牛肉と豆腐と小松菜の炒め物"},
+      {ingredients:["牛肉","魚","根菜類"], title:"牛肉と鮭と大根の煮物"},
+      {ingredients:["牛肉","果菜類","豆腐"], title:"牛肉とトマトと豆腐の炒め煮"},
+      {ingredients:["鶏肉","豆類","豆腐"], title:"鶏肉と枝豆と豆腐のスープ"},
+      {ingredients:["鶏肉","魚","葉物野菜"], title:"鶏肉と白身魚とキャベツの蒸し物"},
+      {ingredients:["鶏肉","果菜類","卵"], title:"鶏肉とナスと卵の炒め物"},
+      {ingredients:["鶏肉","キノコ類","豆腐"], title:"鶏肉とまいたけと豆腐の煮物"},
+      {ingredients:["豚肉","根菜類","豆類"], title:"豚肉とごぼうと枝豆の炒め物"},
+      {ingredients:["豚肉","果菜類","魚"], title:"豚肉とトマトと鮭のソテー"},
+      {ingredients:["豚肉","卵","豆腐"], title:"豚肉と卵と豆腐の炒め煮"},
+      {ingredients:["豚肉","葉物野菜","キノコ類"], title:"豚肉とキャベツとしいたけの炒め物"},
+      {ingredients:["豚肉","豆類","果菜類"], title:"豚肉と枝豆とピーマン炒め"},
+      {ingredients:["魚","豆腐","葉物野菜"], title:"魚と豆腐とほうれん草のスープ"},
+      {ingredients:["魚","卵","キノコ類"], title:"魚と卵としめじの炒め物"},
+      {ingredients:["魚","根菜類","豆腐"], title:"魚と大根と豆腐の煮物"},
+      {ingredients:["魚","果菜類","葉物野菜"], title:"魚とトマトとキャベツの炒め物"},
+      {ingredients:["卵","豆類","葉物野菜"], title:"卵と枝豆と小松菜の炒め物"},
+      {ingredients:["卵","魚","根菜類"], title:"卵と鮭とじゃがいものグラタン"},
+      {ingredients:["卵","豆腐","葉物野菜"], title:"卵と豆腐とキャベツの炒め物"},
+      {ingredients:["卵","果菜類","牛肉"], title:"卵と牛肉とトマトの炒め物"},
+      {ingredients:["豆腐","豆類","根菜類"], title:"豆腐と枝豆とごぼうの煮物"},
+      {ingredients:["豆腐","魚","卵"], title:"豆腐と鮭と卵のスープ"},
+      {ingredients:["豆腐","果菜類","葉物野菜"], title:"豆腐とトマトとほうれん草の炒め物"},
+      {ingredients:["豆腐","牛肉","キノコ類"], title:"豆腐と牛肉としいたけの炒め物"},
+      {ingredients:["豆腐","鶏肉","果菜類"], title:"豆腐と鶏肉とナスの煮込み"},
+      {ingredients:["豆腐","豚肉","豆類"], title:"豆腐と豚肉と枝豆の炒め煮"},
+      {ingredients:["豆腐","魚","キノコ類"], title:"豆腐と白身魚とえのきのスープ"},
+      {ingredients:["豆腐","卵","果菜類"], title:"豆腐と卵とトマトの中華炒め"},
+      {ingredients:["牛肉","鶏肉","豚肉"], title:"牛肉と鶏肉と豚肉のスタミナ炒め"}
     ];
 
     function searchRecipes() {
-      const selected = Array.from(document.querySelectorAll(".ingredients input:checked"))
-                            .map(cb => cb.value);
-      const results = document.getElementById("results");
-      results.innerHTML = "";
+      const checked = Array.from(document.querySelectorAll("input[type=checkbox]:checked"))
+                           .map(cb => cb.value);
 
-      if (selected.length < 2) {
-        results.innerHTML = "<li>材料を2つ以上選択してください。</li>";
+      if (checked.length < 2) {
+        alert("材料を2個以上選んでください！");
         return;
       }
 
-      const matched = recipes.filter(r => selected.every(s => r.ingredients.includes(s)));
+      // 完全一致検索
+      let matched = recipes.filter(r =>
+        checked.every(c => r.ingredients.includes(c))
+      );
 
-      if (matched.length === 0) {
-        results.innerHTML = "<li>該当するレシピがありません。</li>";
-        return;
+      // 一致がなければ部分一致
+      if (matched.length < 2) {
+        matched = recipes.filter(r =>
+          checked.some(c => r.ingredients.includes(c))
+        );
       }
 
-      matched.forEach(r => {
-        const li = document.createElement("li");
-        if (r.link) {
-          li.innerHTML = `<a href="${r.link}" target="_blank">${r.title}</a>`;
-        } else {
-          li.textContent = r.title;
-        }
-        results.appendChild(li);
+      // それでも少なければランダム補充
+      while (matched.length < 2) {
+        matched.push(recipes[Math.floor(Math.random() * recipes.length)]);
+      }
+
+      // ランダムで2件抽出
+      const results = [];
+      while (results.length < 2 && matched.length > 0) {
+        const idx = Math.floor(Math.random() * matched.length);
+        results.push(matched.splice(idx, 1)[0]);
+      }
+
+      // 表示
+      const container = document.getElementById("results");
+      container.innerHTML = "";
+      results.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "recipe";
+        div.innerHTML = `<strong>${r.title}</strong>`;
+        container.appendChild(div);
       });
     }
   </script>
