@@ -1,105 +1,65 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>クックパッド複数カテゴリ検索</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    select { padding: 8px; font-size: 16px; margin: 10px 0; width: 280px; height: 200px; }
-    button { 
-      margin: 10px 0; padding: 10px 15px; 
-      border: none; border-radius: 5px; 
-      background: #ff9933; color: white; cursor: pointer;
-    }
-    button:hover { background: #cc6600; }
-    .recipe { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-    .recipe img { display: block; margin-top: 5px; }
-  </style>
-</head>
-<body>
-  <h2>クックパッド複数カテゴリ検索</h2>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>材料でレシピ検索</title>
+    <style>
+      body { font-family: Arial; padding: 20px; }
+      label { display: block; margin: 5px 0; }
+      button { margin-top: 10px; padding: 8px 12px; }
+      .recipe { margin: 10px 0; }
+    </style>
+  </head>
+  <body>
+    <h2>材料でレシピ検索</h2>
+    <p>材料を2つ以上選択してください：</p>
 
-  <!-- 全カテゴリをまとめたマルチセレクト -->
-  <label for="categorySelect">カテゴリを選択（複数可）:</label><br>
-  <select id="categorySelect" multiple>
-    <!-- 肉・魚系 -->
-    <option value="牛肉">牛肉</option>
-    <option value="鶏肉">鶏肉</option>
-    <option value="豚肉">豚肉</option>
-    <option value="魚">魚</option>
-    <option value="卵">卵</option>
-    <option value="豆腐">豆腐</option>
+    <form id="materialForm">
+      <label><input type="checkbox" name="material" value="牛肉"> 牛肉</label>
+      <label><input type="checkbox" name="material" value="鶏肉"> 鶏肉</label>
+      <label><input type="checkbox" name="material" value="豚肉"> 豚肉</label>
+      <label><input type="checkbox" name="material" value="魚"> 魚</label>
+      <label><input type="checkbox" name="material" value="卵"> 卵</label>
+      <label><input type="checkbox" name="material" value="豆腐"> 豆腐</label>
+      <label><input type="checkbox" name="material" value="根菜類"> 根菜類</label>
+      <label><input type="checkbox" name="material" value="葉物野菜"> 葉物野菜</label>
+      <label><input type="checkbox" name="material" value="果菜類"> 果菜類</label>
+      <label><input type="checkbox" name="material" value="キノコ類"> キノコ類</label>
+      <label><input type="checkbox" name="material" value="豆類"> 豆類</label>
+      <br>
+      <button type="button" onclick="searchRecipes()">検索</button>
+    </form>
 
-    <!-- 野菜系 -->
-    <option value="じゃがいも">根菜類（じゃがいも, にんじん, 大根, れんこん）</option>
-    <option value="キャベツ">葉物野菜（キャベツ, ほうれん草, レタス, 小松菜）</option>
-    <option value="トマト">果菜類（トマト, なす, きゅうり, ピーマン）</option>
-    <option value="しいたけ">きのこ類（しいたけ, しめじ, えのき, まいたけ）</option>
-    <option value="枝豆">豆類・その他（枝豆, いんげん, そら豆, とうもろこし）</option>
-  </select>
-  <br>
-  <button onclick="searchCategories()">選択したカテゴリで検索</button>
+    <div id="results"></div>
 
-  <div id="results"></div>
+    <script>
+      function searchRecipes() {
+        const checkboxes = document.querySelectorAll('input[name="material"]:checked');
+        if (checkboxes.length < 2) {
+          alert("2つ以上の材料を選択してください。");
+          return;
+        }
+        const selected = Array.from(checkboxes).map(c => c.value);
 
-  <script>
-    // 選択したカテゴリでまとめて検索
-    function searchCategories() {
-      const select = document.getElementById("categorySelect");
-      const selected = Array.from(select.selectedOptions).map(o => o.value);
-
-      if (selected.length === 0) {
-        alert("カテゴリを選んでください");
-        return;
+        google.script.run.withSuccessHandler(displayResults).getRecipes(selected);
       }
 
-      // 結果エリアを初期化
-      document.getElementById("results").innerHTML = "";
+      function displayResults(recipes) {
+        const container = document.getElementById("results");
+        container.innerHTML = "";
 
-      // 選んだカテゴリごとに検索
-      selected.forEach(keyword => searchRecipe(keyword));
-    }
-
-    async function searchRecipe(keyword) {
-      const container = document.getElementById("results");
-      container.innerHTML += `<p>「${keyword}」のレシピを検索中...</p>`;
-
-      // ❗ここを自分のVercel APIのURLに置き換える
-      const apiUrl = `https://YOUR-PROJECT.vercel.app/api/search?keyword=${encodeURIComponent(keyword)}`;
-
-      try {
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-
-        let html = `<h3>「${keyword}」の検索結果</h3>`;
-
-        if (data.recipes && data.recipes.length > 0) {
-          data.recipes.forEach(r => {
-            html += `
-              <div class="recipe">
-                <b>${r.title}</b><br>
-                <img src="${r.image}" width="200"><br>
-                <a href="${r.url}" target="_blank">レシピを見る</a>
-              </div>
-            `;
-          });
-        } else {
-          html += "<p>レシピが見つかりませんでした。</p>";
+        if (recipes.length === 0) {
+          container.innerHTML = "<p>該当するレシピが見つかりませんでした。</p>";
+          return;
         }
 
-        container.innerHTML += html;
-
-      } catch (e) {
-        container.innerHTML += `<p>「${keyword}」の検索中にエラーが発生しました。（APIのURLを確認してください）</p>`;
-        console.error(e);
+        recipes.forEach(r => {
+          const div = document.createElement("div");
+          div.className = "recipe";
+          div.innerHTML = `<a href="${r.url}" target="_blank">${r.title}</a>`;
+          container.appendChild(div);
+        });
       }
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>
-
-
-
-
-
-
