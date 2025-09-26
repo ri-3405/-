@@ -1,3 +1,4 @@
+/* 全体フォント・背景 */
 body {
   font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
   background: #fff7f8;
@@ -6,6 +7,7 @@ body {
   color: #333;
 }
 
+/* タイトル */
 h1 {
   text-align: center;
   font-size: 2.8em;
@@ -14,39 +16,47 @@ h1 {
   text-shadow: 2px 2px #ffd6d6;
 }
 
+/* 材料チェックボックス */
 .ingredients {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   margin-bottom: 30px;
+  max-width: 600px; /* 2行に収まる幅 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ingredients label {
   background: #ffe6e6;
   border-radius: 20px;
-  padding: 8px 15px;
+  padding: 12px 20px; /* 大きくする */
   cursor: pointer;
+  font-size: 1.1em;  /* 文字を大きく */
   transition: all 0.3s;
 }
 
 .ingredients input[type="checkbox"] {
-  margin-right: 5px;
+  margin-right: 8px;
+  transform: scale(1.3); /* チェックボックス自体を大きく */
 }
 
 .ingredients label:hover {
   background: #ffb6b9;
 }
 
+/* 検索ボタン */
 button {
   display: block;
   margin: 0 auto 40px;
-  padding: 10px 20px;
+  padding: 15px 30px; /* 大きくする */
   background: #ff6f61;
   color: white;
   font-weight: bold;
   border: none;
   border-radius: 30px;
+  font-size: 1.2em; /* ボタン文字大きめ */
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -56,6 +66,7 @@ button:hover {
   transform: scale(1.05);
 }
 
+/* 検索結果カード */
 #results {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
