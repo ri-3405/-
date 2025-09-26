@@ -1,16 +1,16 @@
-/* 全体フォント・背景 */
+/* 全体 */
 body {
   font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
   background: #fff7f8;
   margin: 0;
-  padding: 20px;
+  padding: 30px;
   color: #333;
 }
 
 /* タイトル */
 h1 {
   text-align: center;
-  font-size: 2.8em;
+  font-size: 3em;
   color: #ff6f61;
   margin-bottom: 30px;
   text-shadow: 2px 2px #ffd6d6;
@@ -20,45 +20,43 @@ h1 {
 .ingredients {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 15px;
-  margin-bottom: 30px;
-  max-width: 600px; /* 2行に収まる幅 */
-  margin-left: auto;
-  margin-right: auto;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .ingredients label {
-  background: #ffe6e6;
+  font-size: 1.3em; /* 文字を大きく */
+  background: #fff0f5;
+  padding: 8px 15px;
   border-radius: 20px;
-  padding: 12px 20px; /* 大きくする */
+  border: 1px solid #ffb6b9;
   cursor: pointer;
-  font-size: 1.1em;  /* 文字を大きく */
-  transition: all 0.3s;
+  transition: 0.3s;
 }
 
 .ingredients input[type="checkbox"] {
   margin-right: 8px;
-  transform: scale(1.3); /* チェックボックス自体を大きく */
+  transform: scale(1.3); /* チェックボックスも大きく */
 }
 
 .ingredients label:hover {
-  background: #ffb6b9;
+  background: #ffe6e6;
+  border-color: #ff6f61;
 }
 
 /* 検索ボタン */
 button {
-  display: block;
-  margin: 0 auto 40px;
-  padding: 15px 30px; /* 大きくする */
-  background: #ff6f61;
-  color: white;
-  font-weight: bold;
+  font-size: 1.4em; /* 大きく */
+  padding: 12px 25px;
   border: none;
   border-radius: 30px;
-  font-size: 1.2em; /* ボタン文字大きめ */
+  background: #ff6f61;
+  color: white;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: 0.3s;
+  display: block;
+  margin: 0 auto 30px auto;
 }
 
 button:hover {
@@ -67,56 +65,30 @@ button:hover {
 }
 
 /* 検索結果カード */
-#results {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-}
-
 .recipe {
   background: linear-gradient(135deg, #fff0f5, #ffe6e6);
   border-radius: 25px;
   padding: 20px;
+  margin: 10px 0;
   box-shadow: 0 8px 18px rgba(0,0,0,0.15);
   border: 2px solid #ffb6b9;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .recipe:hover {
-  transform: translateY(-10px) rotate(-1deg);
+  transform: translateY(-5px);
   box-shadow: 0 12px 25px rgba(0,0,0,0.2);
 }
 
-.recipe-title {
-  font-size: 1.3em;
-  font-weight: bold;
-  margin-bottom: 8px;
+.recipe strong {
+  font-size: 1.5em; /* レシピタイトルを大きく */
   color: #ff4b3e;
 }
 
-.recipe-title::before {
-  content: "🍳 ";
-}
-
-.recipe-ingredients {
-  font-size: 0.9em;
-  color: #555;
-  margin-bottom: 15px;
-}
-
-.recipe-link {
-  display: inline-block;
-  padding: 10px 20px;
-  background: #ff6f61;
-  color: white;
-  border-radius: 30px;
-  text-decoration: none;
-  font-size: 0.95em;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.recipe-link:hover {
-  background: #ff4b3e;
-  transform: scale(1.1);
+.no-result {
+  text-align: center;
+  font-size: 1.2em;
+  color: #999;
+  font-style: italic;
+  margin-top: 20px;
 }
