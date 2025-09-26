@@ -1,32 +1,29 @@
-/* 全体 */
 body {
   font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
-  background: #fff0f5; /* ふんわりピンク系 */
+  background: #fff7f8;
   margin: 0;
   padding: 20px;
   color: #333;
 }
 
-/* タイトル */
 h1 {
   text-align: center;
+  font-size: 2.8em;
   color: #ff6f61;
-  font-size: 2.5em;
   margin-bottom: 30px;
-  text-shadow: 1px 1px #ffe0e0;
+  text-shadow: 2px 2px #ffd6d6;
 }
 
-/* チェックボックスなどの検索部分 */
 .search-box {
   text-align: center;
   margin-bottom: 30px;
 }
 
 input[type="text"] {
-  width: 300px;
-  padding: 10px 15px;
+  width: 320px;
+  padding: 12px 20px;
   border: 2px solid #ffb6b9;
-  border-radius: 25px;
+  border-radius: 30px;
   outline: none;
   font-size: 1em;
   transition: all 0.3s ease;
@@ -34,76 +31,65 @@ input[type="text"] {
 
 input[type="text"]:focus {
   border-color: #ff6f61;
-  box-shadow: 0 0 8px rgba(255, 111, 97, 0.5);
+  box-shadow: 0 0 10px rgba(255,111,97,0.5);
 }
 
-/* レシピリストをカード型に */
 .recipe-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 }
 
-/* 個別カード */
 .recipe-card {
-  background: #fff;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #fff0f5, #ffe6e6);
+  border-radius: 25px;
   padding: 20px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  border: 2px solid #ffd6d6;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  border: 2px solid #ffb6b9;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
+  cursor: pointer;
 }
 
-/* カードホバー時 */
 .recipe-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+  transform: translateY(-10px) rotate(-1deg);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.2);
 }
 
-/* タイトル */
 .recipe-title {
   font-size: 1.3em;
   font-weight: bold;
   margin-bottom: 8px;
-  color: #ff6f61;
+  color: #ff4b3e;
 }
 
-/* タイトル横に絵文字 */
 .recipe-title::before {
   content: "🍳 ";
 }
 
-/* 材料表示 */
 .recipe-ingredients {
   font-size: 0.9em;
   color: #555;
   margin-bottom: 15px;
 }
 
-/* リンクボタン */
 .recipe-link {
   display: inline-block;
-  padding: 8px 16px;
+  padding: 10px 20px;
   background: #ff6f61;
   color: white;
   border-radius: 30px;
   text-decoration: none;
   font-size: 0.95em;
+  font-weight: bold;
   transition: all 0.3s ease;
 }
 
 .recipe-link:hover {
   background: #ff4b3e;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
-/* 結果全体 */
-#result {
-  margin-top: 30px;
-}
-
-/* レシピが見つからない場合 */
 .no-result {
   text-align: center;
   color: #999;
