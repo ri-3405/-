@@ -72,6 +72,7 @@ button:hover {
   padding: 0;
 }
 .recipe {
+  display: none; /* 初期状態では非表示 */
   background: linear-gradient(135deg, #fff0f5, #ffe6e6);
   border-radius: 25px;
   padding: 20px;
@@ -96,5 +97,6 @@ button:hover {
   font-style: italic;
   margin-top: 20px;
 }
+
 
 
