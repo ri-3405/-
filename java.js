@@ -1,4 +1,4 @@
-function searchRecipes() {
+    function searchRecipes() {
   // 選択された材料を取得
   const selected = Array.from(document.querySelectorAll(".ingredients input:checked"))
     .map(i => i.value);
