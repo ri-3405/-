@@ -1222,42 +1222,41 @@
     </div>
   </div>
     
-    
+  <script>
     function searchRecipes() {
-      const checked = Array.from(document.querySelectorAll("input[type=checkbox]:checked"))
-                           .map(cb => cb.value);
+  // 選択された材料を取得
+  const selected = Array.from(document.querySelectorAll(".ingredients input:checked"))
+    .map(i => i.value);
 
-      if (checked.length < 2) {
-        alert("材料を2個以上選んでください！");
-        return;
-      }
+  if (selected.length < 2) {
+    alert("2つ以上の材料を選んでください。");
+    return;
+  }
 
-      let matched = recipes.filter(r =>
-        checked.every(c => r.ingredients.includes(c))
-      );
+  // 全レシピを一旦非表示
+  const recipes = document.querySelectorAll(".recipe");
+  recipes.forEach(r => r.style.display = "none");
 
-      if (matched.length === 0) {
-        matched = recipes.filter(r =>
-          checked.some(c => r.ingredients.includes(c))
-        );
-      }
-
-      const resultsContainer = document.getElementById("results");
-      resultsContainer.innerHTML = "";
-      if (matched.length === 0) {
-        resultsContainer.innerHTML = `<p class="no-result">レシピが見つかりませんでした</p>`;
-      } else {
-        matched.forEach(r => {
-          const div = document.createElement("div");
-          div.className = "recipe";
-          div.innerHTML = `<strong>${r.title}</strong><div class="method">${r.method}</div>`;
-          resultsContainer.appendChild(div);
-        });
-      }
+  let found = 0;
+  recipes.forEach(r => {
+    const ingredients = r.getAttribute("data-ingredients").split(",");
+    // 全ての選択材料が含まれているか判定
+    const match = selected.every(s => ingredients.includes(s));
+    if (match) {
+      r.style.display = "block"; // 条件一致したものだけ表示
+      found++;
     }
-　
+  });
+
+  if (found === 0) {
+    alert("該当するレシピがありません。");
+  }
+}
+
+  </script>
 </body>
 </html>
+
 
 
 
